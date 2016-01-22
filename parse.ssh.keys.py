@@ -33,10 +33,11 @@ with open(file) as f:
 		ssh_key_comment = regex_match.group(3)
 		ssh_key = regex_match.group(2)
 
-		ssh_key_name = input("Please enter a name from SSH key " + ssh_key_comment + ": ")
+		ssh_key_name = input("Please enter a title for " + ssh_key_comment + ": ")
+		ssh_key_user = input("Which user should this be applied to? ")
 
 		doc = db[document]
-		doc[ssh_key_name] = '{type: ' + ssh_key_type + ', comment: ' + ssh_key_comment + ', key: ' + ssh_key + '}'
+		doc[ssh_key_name] = '{ensure: present, type: ' + ssh_key_type + ', name: ' + ssh_key_name + ', key: ' + ssh_key + ', user: ' + ssh_key_user + '}'
 
 		db.save(doc)
 		print(doc[ssh_key_name])
