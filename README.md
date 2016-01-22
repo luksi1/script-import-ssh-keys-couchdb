@@ -19,7 +19,7 @@ Change the variable "url", "database" and "document" to match your environment.
  - couchdb
 
 ## Options
- - file <The name of the file to import>
+ - file TheNameOfYourFileToImport (required)
 
 ## Examples
 parse.ssh.keys.py --file MyFile
