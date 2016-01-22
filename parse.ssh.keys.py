@@ -19,8 +19,6 @@ database="common"
 document="authorized_keys"
 couch = couchdb.Server(url)
 db = couch[database]
-del db[document]
-db.save({"_id": document})
 doc = db[document]
 
 parser = argparse.ArgumentParser(description='This is a simple script to add a ssh_authorized key file to a REST API')
