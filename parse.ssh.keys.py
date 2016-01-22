@@ -1,5 +1,6 @@
 #!/usr/bin/python3
 
+import json
 import argparse
 import re
 import couchdb
@@ -18,6 +19,8 @@ database="common"
 document="authorized_keys"
 couch = couchdb.Server(url)
 db = couch[database]
+del db[document]
+db.save({"_id": document})
 doc = db[document]
 
 parser = argparse.ArgumentParser(description='This is a simple script to add a ssh_authorized key file to a REST API')
@@ -37,7 +40,17 @@ with open(file) as f:
 		ssh_key_user = input("Which user should this be applied to? ")
 
 		doc = db[document]
-		doc[ssh_key_name] = '{ensure: present, type: ' + ssh_key_type + ', name: ' + ssh_key_name + ', key: ' + ssh_key + ', user: ' + ssh_key_user + '}'
+		#data = [{'poopy': 'pants', 'crappy': 'pants'}]
+		#doc[ssh_key_name] = data
+		doc[ssh_key_name] = {
+			ssh_key_name: {
+				'ensure':  'present', 
+				'type': ssh_key_type,
+				'name': ssh_key_name,
+				'key': ssh_key,
+				'user': ssh_key_user 
+			}
+		}
 
 		db.save(doc)
 		print(doc[ssh_key_name])
