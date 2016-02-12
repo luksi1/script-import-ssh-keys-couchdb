@@ -25,22 +25,26 @@ parser = argparse.ArgumentParser(description='This is a simple script to add a s
 parser.add_argument('-f','--file', help='The file to be parsed. This file can contain multiple SSH keys.', required=True)
 args = parser.parse_args();
 file = args.file
-type = re.compile("^\s+")
+type = re.compile(r"(\w+-\w+) (\S+) (\S+)")
 
 with open(file) as f:
 	for row in f:
-		regex_match = re.match(r"(\w+-\w+) (\S+) (\S+)", row)
-		ssh_key_type = regex_match.group(1)
-		ssh_key_comment = regex_match.group(3)
-		ssh_key = regex_match.group(2)
+		if row.strip() == '':
+			continue
+		result = type.match(row)
+		ssh_key_type = result.group(1)
+		ssh_key_comment = result.group(3)
+		ssh_key = result.group(2)
 
-		ssh_key_name = input("Please enter a title for " + ssh_key_comment + ": ")
-		ssh_key_user = input("Which user should this be applied to? ")
+		ssh_key_name = input("Please enter a title for " + ssh_key_comment + ": [" + ssh_key_comment + "] ")
+		if ssh_key_name == "":
+			ssh_key_name = ssh_key_comment
+		ssh_key_user = input("Which user should this be applied to? [root] ")
+		if ssh_key_user == "":
+			ssh_key_user = "root"
 
 		doc = db[document]
-		#data = [{'poopy': 'pants', 'crappy': 'pants'}]
-		#doc[ssh_key_name] = data
-		doc[ssh_key_name] = {
+		doc["ssh_key_" + ssh_key_name] = {
 			ssh_key_name: {
 				'ensure':  'present', 
 				'type': ssh_key_type,
@@ -51,4 +55,4 @@ with open(file) as f:
 		}
 
 		db.save(doc)
-		print(doc[ssh_key_name])
+		print(doc["ssh_key_" + ssh_key_name])
