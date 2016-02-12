@@ -14,9 +14,9 @@ Example:
 """
 
 # Static variables
-url='http://puppet.vgregion.se:5984/'
-database="common"
-document="authorized_keys"
+url='http://domain.com:5984/'
+database="my_database"
+document="my_document"
 couch = couchdb.Server(url)
 db = couch[database]
 doc = db[document]
